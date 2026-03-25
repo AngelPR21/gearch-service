@@ -44,7 +44,6 @@ public class TallerService {
         taller.setDescripcion(datos.getDescripcion());
         taller.setLatitud(datos.getLatitud());
         taller.setLongitud(datos.getLongitud());
-        taller.setHorario(datos.getHorario());
         return tallerRepository.save(taller);
     }
 

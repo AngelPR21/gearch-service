@@ -54,4 +54,6 @@ public class Taller {
     @OneToMany(mappedBy = "taller", cascade = CascadeType.ALL, orphanRemoval = true)
     @Builder.Default
     private List<Resena> resenas = new ArrayList<>();
+
+
 }
