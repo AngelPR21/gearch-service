@@ -1,0 +1,65 @@
+package com.gearch.gearchbackend.services;
+
+
+import com.gearch.gearchbackend.entities.Resena;
+import com.gearch.gearchbackend.entities.Taller;
+import com.gearch.gearchbackend.entities.Usuario;
+import com.gearch.gearchbackend.repositories.ResenaRepository;
+import com.gearch.gearchbackend.repositories.TallerRepository;
+import com.gearch.gearchbackend.repositories.UsuarioRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+import java.time.LocalDateTime;
+import java.util.List;
+import java.util.Optional;
+
+@Service
+@RequiredArgsConstructor
+public class ResenaService {
+
+    private final ResenaRepository resenaRepository;
+    private final UsuarioRepository usuarioRepository;
+    private final TallerRepository tallerRepository;
+
+    public List<Resena> findAll() {
+        return resenaRepository.findAll();
+    }
+
+    public Optional<Resena> findById(Long id) {
+        return resenaRepository.findById(id);
+    }
+
+    public List<Resena> findByTaller(Long tallerId) {
+        return resenaRepository.findByTallerId(tallerId);
+    }
+
+    public List<Resena> findByUsuario(Long usuarioId) {
+        return resenaRepository.findByUsuarioId(usuarioId);
+    }
+
+    public Resena save(Long usuarioId, Long tallerId, Resena resena) {
+        if (resena.getPuntuacion() < 1 || resena.getPuntuacion() > 5) {
+            throw new RuntimeException("La puntuación debe estar entre 1 y 5.");
+        }
+
+        Usuario usuario = usuarioRepository.findById(usuarioId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + usuarioId));
+
+        Taller taller = tallerRepository.findById(tallerId)
+                .orElseThrow(() -> new RuntimeException("Taller no encontrado con id: " + tallerId));
+
+        resena.setUsuario(usuario);
+        resena.setTaller(taller);
+        resena.setFecha(LocalDateTime.now());
+
+        return resenaRepository.save(resena);
+    }
+
+    public void delete(Long id) {
+        if (!resenaRepository.existsById(id)) {
+            throw new RuntimeException("Reseña no encontrada con id: " + id);
+        }
+        resenaRepository.deleteById(id);
+    }
+}
