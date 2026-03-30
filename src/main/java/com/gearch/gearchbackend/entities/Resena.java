@@ -1,5 +1,6 @@
 package com.gearch.gearchbackend.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -20,7 +21,6 @@ public class Resena {
     @Column(nullable = false)
     private String comentario;
 
-    // Puntuación del 1 al 5
     @Column(nullable = false)
     private Integer puntuacion;
 
@@ -28,13 +28,13 @@ public class Resena {
     @Builder.Default
     private LocalDateTime fecha = LocalDateTime.now();
 
-    // Muchas reseñas pertenecen a un usuario
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id", nullable = false)
+    @JsonIgnore
     private Usuario usuario;
 
-    // Muchas reseñas pertenecen a un taller
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "taller_id", nullable = false)
+    @JsonIgnore
     private Taller taller;
 }

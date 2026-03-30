@@ -1,6 +1,5 @@
 package com.gearch.gearchbackend.controllers;
 
-
 import com.gearch.gearchbackend.entities.Servicio;
 import com.gearch.gearchbackend.services.ServicioService;
 import lombok.RequiredArgsConstructor;
@@ -26,10 +25,12 @@ public class ServicioController {
 
     // GET /api/servicios/{id}
     @GetMapping("/{id}")
-    public ResponseEntity<Servicio> getById(@PathVariable Long id) {
-        return servicioService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(servicioService.findById(id));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+        }
     }
 
     // GET /api/servicios/taller/{tallerId}
@@ -42,8 +43,7 @@ public class ServicioController {
     @PostMapping("/taller/{tallerId}")
     public ResponseEntity<?> create(@PathVariable Long tallerId, @RequestBody Servicio servicio) {
         try {
-            Servicio nuevo = servicioService.save(tallerId, servicio);
-            return ResponseEntity.status(HttpStatus.CREATED).body(nuevo);
+            return ResponseEntity.status(HttpStatus.CREATED).body(servicioService.save(tallerId, servicio));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
@@ -55,7 +55,7 @@ public class ServicioController {
         try {
             return ResponseEntity.ok(servicioService.update(id, servicio));
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
         }
     }
 
@@ -66,7 +66,7 @@ public class ServicioController {
             servicioService.delete(id);
             return ResponseEntity.ok(Map.of("mensaje", "Servicio eliminado correctamente"));
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
         }
     }
 }

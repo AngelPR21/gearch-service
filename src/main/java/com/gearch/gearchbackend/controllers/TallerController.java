@@ -25,10 +25,12 @@ public class TallerController {
 
     // GET /api/talleres/{id}
     @GetMapping("/{id}")
-    public ResponseEntity<Taller> getById(@PathVariable Long id) {
-        return tallerService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(tallerService.findById(id));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+        }
     }
 
     // GET /api/talleres/buscar?nombre=AutoTop
@@ -58,7 +60,7 @@ public class TallerController {
         try {
             return ResponseEntity.ok(tallerService.update(id, taller));
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
         }
     }
 
@@ -69,7 +71,7 @@ public class TallerController {
             tallerService.delete(id);
             return ResponseEntity.ok(Map.of("mensaje", "Taller eliminado correctamente"));
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
         }
     }
 }

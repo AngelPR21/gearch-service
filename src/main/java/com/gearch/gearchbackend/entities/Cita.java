@@ -1,20 +1,15 @@
 package com.gearch.gearchbackend.entities;
 
-
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.gearch.gearchbackend.enums.EstadoCita;
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
-
+import lombok.*;
 
 import java.time.LocalDateTime;
 
 @Entity
 @Table(
     name = "citas",
-    // Restricción única: un taller no puede tener dos citas a la misma hora
     uniqueConstraints = @UniqueConstraint(columnNames = {"taller_id", "fecha_hora"})
 )
 @Data
@@ -37,23 +32,24 @@ public class Cita {
 
     private String notas;
 
-    // Muchas citas pertenecen a un usuario
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id", nullable = false)
+    @JsonIgnore
     private Usuario usuario;
 
-    // Muchas citas pertenecen a un taller
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "taller_id", nullable = false)
+    @JsonIgnore
     private Taller taller;
 
-    // Cada cita es para un servicio concreto
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "servicio_id", nullable = false)
+    @JsonIgnore
     private Servicio servicio;
 
-    // El vehículo es opcional (puede omitirse si no es propietario)
+    // Vehículo es opcional
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "vehiculo_id")
+    @JsonIgnore
     private Vehiculo vehiculo;
 }

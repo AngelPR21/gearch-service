@@ -25,10 +25,12 @@ public class ResenaController {
 
     // GET /api/resenas/{id}
     @GetMapping("/{id}")
-    public ResponseEntity<Resena> getById(@PathVariable Long id) {
-        return resenaService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(resenaService.findById(id));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+        }
     }
 
     // GET /api/resenas/taller/{tallerId}
@@ -44,14 +46,15 @@ public class ResenaController {
     }
 
     // POST /api/resenas?usuarioId=1&tallerId=1
+    // Body: { "comentario": "...", "puntuacion": 5 }
     @PostMapping
     public ResponseEntity<?> create(
             @RequestParam Long usuarioId,
             @RequestParam Long tallerId,
             @RequestBody Resena resena) {
         try {
-            Resena nueva = resenaService.save(usuarioId, tallerId, resena);
-            return ResponseEntity.status(HttpStatus.CREATED).body(nueva);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(resenaService.save(usuarioId, tallerId, resena));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
@@ -64,7 +67,7 @@ public class ResenaController {
             resenaService.delete(id);
             return ResponseEntity.ok(Map.of("mensaje", "Reseña eliminada correctamente"));
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
         }
     }
 }

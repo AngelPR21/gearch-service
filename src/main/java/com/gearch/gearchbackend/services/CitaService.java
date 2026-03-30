@@ -1,15 +1,16 @@
 package com.gearch.gearchbackend.services;
 
-
 import com.gearch.gearchbackend.entities.*;
+import com.gearch.gearchbackend.enums.DiaSemana;
 import com.gearch.gearchbackend.enums.EstadoCita;
 import com.gearch.gearchbackend.repositories.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -20,23 +21,26 @@ public class CitaService {
     private final TallerRepository tallerRepository;
     private final ServicioRepository servicioRepository;
     private final VehiculoRepository vehiculoRepository;
+    private final DisponibilidadTallerRepository disponibilidadRepository;
 
     public List<Cita> findAll() {
         return citaRepository.findAll();
     }
 
-    public Optional<Cita> findById(Long id) {
-        return citaRepository.findById(id);
+    public Cita findById(Long id) {
+        if (!citaRepository.existsById(id)) {
+            throw new RuntimeException("Cita no encontrada con id: " + id);
+        }
+        return citaRepository.getReferenceById(id);
     }
 
     public List<Cita> findByUsuario(Long usuarioId) {
         return citaRepository.findByUsuarioId(usuarioId);
     }
 
-    /** Citas futuras del usuario ordenadas por fecha (para la pantalla "Mis próximas citas") */
     public List<Cita> findProximasByUsuario(Long usuarioId) {
-        return citaRepository
-                .findByUsuarioIdAndFechaHoraAfterOrderByFechaHoraAsc(usuarioId, LocalDateTime.now());
+        return citaRepository.findByUsuarioIdAndFechaHoraAfterOrderByFechaHoraAsc(
+                usuarioId, LocalDateTime.now());
     }
 
     public List<Cita> findByTaller(Long tallerId) {
@@ -47,41 +51,62 @@ public class CitaService {
         return citaRepository.findByTallerIdAndFechaHoraBetween(tallerId, inicio, fin);
     }
 
-    public Cita save(Long usuarioId, Long tallerId, Long servicioId, Long vehiculoId, Cita cita) {
+    public Cita save(Long usuarioId, Long tallerId, Long servicioId,
+                     Long vehiculoId, Cita cita) {
 
-        // 1. Comprobar que la fecha/hora no está ya ocupada en ese taller
+        // 1. Comprobar duplicado
         if (citaRepository.existsByTallerIdAndFechaHora(tallerId, cita.getFechaHora())) {
-            throw new RuntimeException("Ya existe una cita en ese taller para la fecha y hora indicadas.");
+            throw new RuntimeException("Ya existe una cita en ese taller para esa fecha y hora.");
         }
 
-        // 2. Cargar entidades relacionadas
-        Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + usuarioId));
+        // 2. Validar que la hora esté dentro del horario del taller
+        LocalDate fecha = cita.getFechaHora().toLocalDate();
+        LocalTime hora  = cita.getFechaHora().toLocalTime();
+        DiaSemana diaSemana = DiaSemana.desdeDayOfWeek(fecha.getDayOfWeek());
 
-        Taller taller = tallerRepository.findById(tallerId)
-                .orElseThrow(() -> new RuntimeException("Taller no encontrado con id: " + tallerId));
+        DisponibilidadTaller horario =
+                disponibilidadRepository.findByTallerIdAndDiaSemana(tallerId, diaSemana);
 
-        Servicio servicio = servicioRepository.findById(servicioId)
-                .orElseThrow(() -> new RuntimeException("Servicio no encontrado con id: " + servicioId));
-
-        // 3. El vehículo es opcional
-        if (vehiculoId != null) {
-            Vehiculo vehiculo = vehiculoRepository.findById(vehiculoId)
-                    .orElseThrow(() -> new RuntimeException("Vehículo no encontrado con id: " + vehiculoId));
-            cita.setVehiculo(vehiculo);
+        if (horario == null) {
+            throw new RuntimeException("El taller no tiene disponibilidad ese día de la semana.");
+        }
+        if (hora.isBefore(horario.getHoraInicio()) || !hora.isBefore(horario.getHoraFin())) {
+            throw new RuntimeException("La hora elegida está fuera del horario del taller ("
+                    + horario.getHoraInicio() + " - " + horario.getHoraFin() + ").");
         }
 
-        cita.setUsuario(usuario);
-        cita.setTaller(taller);
-        cita.setServicio(servicio);
+        // 3. Cargar entidades relacionadas con comprobación if
+        if (!usuarioRepository.existsById(usuarioId)) {
+            throw new RuntimeException("Usuario no encontrado con id: " + usuarioId);
+        }
+        if (!tallerRepository.existsById(tallerId)) {
+            throw new RuntimeException("Taller no encontrado con id: " + tallerId);
+        }
+        if (!servicioRepository.existsById(servicioId)) {
+            throw new RuntimeException("Servicio no encontrado con id: " + servicioId);
+        }
+
+        cita.setUsuario(usuarioRepository.getReferenceById(usuarioId));
+        cita.setTaller(tallerRepository.getReferenceById(tallerId));
+        cita.setServicio(servicioRepository.getReferenceById(servicioId));
         cita.setEstado(EstadoCita.PENDIENTE);
+
+        // 4. Vehículo es opcional
+        if (vehiculoId != null) {
+            if (!vehiculoRepository.existsById(vehiculoId)) {
+                throw new RuntimeException("Vehículo no encontrado con id: " + vehiculoId);
+            }
+            cita.setVehiculo(vehiculoRepository.getReferenceById(vehiculoId));
+        }
 
         return citaRepository.save(cita);
     }
 
     public Cita updateEstado(Long id, String estado) {
-        Cita cita = citaRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Cita no encontrada con id: " + id));
+        if (!citaRepository.existsById(id)) {
+            throw new RuntimeException("Cita no encontrada con id: " + id);
+        }
+        Cita cita = citaRepository.getReferenceById(id);
         cita.setEstado(EstadoCita.valueOf(estado.toUpperCase()));
         return citaRepository.save(cita);
     }

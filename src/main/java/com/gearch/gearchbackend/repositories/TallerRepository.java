@@ -1,6 +1,5 @@
 package com.gearch.gearchbackend.repositories;
 
-
 import com.gearch.gearchbackend.entities.Taller;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -12,10 +11,8 @@ import java.util.List;
 @Repository
 public interface TallerRepository extends JpaRepository<Taller, Long> {
 
-    // Búsqueda por nombre (insensible a mayúsculas)
     List<Taller> findByNombreContainingIgnoreCase(String nombre);
 
-    // Búsqueda por cercanía usando fórmula de Haversine (distancia en km)
     @Query(value = """
         SELECT * FROM talleres t
         WHERE t.latitud IS NOT NULL AND t.longitud IS NOT NULL

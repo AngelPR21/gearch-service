@@ -1,6 +1,5 @@
 package com.gearch.gearchbackend.services;
 
-
 import com.gearch.gearchbackend.entities.Servicio;
 import com.gearch.gearchbackend.entities.Taller;
 import com.gearch.gearchbackend.repositories.ServicioRepository;
@@ -9,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,8 +20,11 @@ public class ServicioService {
         return servicioRepository.findAll();
     }
 
-    public Optional<Servicio> findById(Long id) {
-        return servicioRepository.findById(id);
+    public Servicio findById(Long id) {
+        if (!servicioRepository.existsById(id)) {
+            throw new RuntimeException("Servicio no encontrado con id: " + id);
+        }
+        return servicioRepository.getReferenceById(id);
     }
 
     public List<Servicio> findByTaller(Long tallerId) {
@@ -31,15 +32,19 @@ public class ServicioService {
     }
 
     public Servicio save(Long tallerId, Servicio servicio) {
-        Taller taller = tallerRepository.findById(tallerId)
-                .orElseThrow(() -> new RuntimeException("Taller no encontrado con id: " + tallerId));
+        if (!tallerRepository.existsById(tallerId)) {
+            throw new RuntimeException("Taller no encontrado con id: " + tallerId);
+        }
+        Taller taller = tallerRepository.getReferenceById(tallerId);
         servicio.setTaller(taller);
         return servicioRepository.save(servicio);
     }
 
     public Servicio update(Long id, Servicio datos) {
-        Servicio servicio = servicioRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Servicio no encontrado con id: " + id));
+        if (!servicioRepository.existsById(id)) {
+            throw new RuntimeException("Servicio no encontrado con id: " + id);
+        }
+        Servicio servicio = servicioRepository.getReferenceById(id);
         servicio.setNombre(datos.getNombre());
         servicio.setDescripcion(datos.getDescripcion());
         servicio.setPrecio(datos.getPrecio());

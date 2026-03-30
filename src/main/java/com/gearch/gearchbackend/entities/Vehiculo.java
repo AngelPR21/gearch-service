@@ -26,13 +26,9 @@ public class Vehiculo {
     private String matricula;
 
     private Integer anio;
-
     private String color;
-
-    // Tipo de combustible: GASOLINA, DIESEL, ELECTRICO, HIBRIDO
     private String combustible;
 
-    // Muchos vehículos pertenecen a un usuario
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id", nullable = false)
     @JsonIgnore

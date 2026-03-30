@@ -6,7 +6,6 @@ import com.gearch.gearchbackend.enums.EstadoCita;
 import com.gearch.gearchbackend.enums.RolUsuario;
 import com.gearch.gearchbackend.enums.TipoServicio;
 import com.gearch.gearchbackend.repositories.*;
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
@@ -15,18 +14,18 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 
 /**
- * Carga datos de ejemplo al arrancar la aplicación.
+ * Inserta datos de ejemplo al arrancar la aplicación.
  * Solo se ejecuta si la base de datos está vacía.
  */
 @Component
 @RequiredArgsConstructor
 public class DataLoader implements CommandLineRunner {
 
-    private final UsuarioRepository usuarioRepository;
-    private final TallerRepository tallerRepository;
-    private final VehiculoRepository vehiculoRepository;
-    private final ServicioRepository servicioRepository;
-    private final CitaRepository citaRepository;
+    private final UsuarioRepository              usuarioRepository;
+    private final TallerRepository               tallerRepository;
+    private final VehiculoRepository             vehiculoRepository;
+    private final ServicioRepository             servicioRepository;
+    private final CitaRepository                 citaRepository;
     private final ResenaRepository               resenaRepository;
     private final DisponibilidadTallerRepository disponibilidadRepository;
 
@@ -34,17 +33,6 @@ public class DataLoader implements CommandLineRunner {
     public void run(String... args) {
 
         if (usuarioRepository.count() > 0) return;
-
-        // ── Usuarios CLIENTE ──────────────────────────────────────
-        Usuario u1 = usuarioRepository.save(Usuario.builder()
-                .nombre("Carlos").apellidos("Martínez López")
-                .email("carlos@email.com").password("1234")
-                .telefono("612345678").rol(RolUsuario.CLIENTE).build());
-
-        Usuario u2 = usuarioRepository.save(Usuario.builder()
-                .nombre("Ana").apellidos("García Ruiz")
-                .email("ana@email.com").password("1234")
-                .telefono("698765432").rol(RolUsuario.CLIENTE).build());
 
         // ── Talleres ──────────────────────────────────────────────
         Taller t1 = tallerRepository.save(Taller.builder()
@@ -63,23 +51,36 @@ public class DataLoader implements CommandLineRunner {
                 .latitud(39.4750).longitud(-0.3800)
                 .build());
 
+        // ── Usuarios CLIENTE ──────────────────────────────────────
+        Usuario u1 = usuarioRepository.save(Usuario.builder()
+                .nombre("Carlos").apellidos("Martínez López")
+                .email("carlos@email.com").password("1234")
+                .telefono("612345678").rol(RolUsuario.CLIENTE).build());
+
+        Usuario u2 = usuarioRepository.save(Usuario.builder()
+                .nombre("Ana").apellidos("García Ruiz")
+                .email("ana@email.com").password("1234")
+                .telefono("698765432").rol(RolUsuario.CLIENTE).build());
+
         // ── Usuarios ADMIN_TALLER ─────────────────────────────────
         usuarioRepository.save(Usuario.builder()
-                .nombre("Pedro").apellidos("Sánchez Taller")
+                .nombre("Pedro").apellidos("Sánchez")
                 .email("admin.autotop@email.com").password("admin1234")
                 .telefono("963112233").rol(RolUsuario.ADMIN_TALLER)
                 .tallerAdministrado(t1).build());
 
         usuarioRepository.save(Usuario.builder()
-                .nombre("Laura").apellidos("Gómez Express")
+                .nombre("Laura").apellidos("Gómez")
                 .email("admin.mecanica@email.com").password("admin1234")
                 .telefono("961223344").rol(RolUsuario.ADMIN_TALLER)
                 .tallerAdministrado(t2).build());
 
-        // ── Horario semanal — AutoTop Valencia (Lun-Vie 08:30-18:00, Sáb 09:00-13:00)
-        DiaSemana[] diasSemana = { DiaSemana.LUNES, DiaSemana.MARTES, DiaSemana.MIERCOLES,
-                                   DiaSemana.JUEVES, DiaSemana.VIERNES };
-        for (DiaSemana dia : diasSemana) {
+        // ── Horario semanal — AutoTop (Lun-Vie 08:30-18:00, Sáb 09:00-13:00)
+        DiaSemana[] diasLaborables = {
+            DiaSemana.LUNES, DiaSemana.MARTES, DiaSemana.MIERCOLES,
+            DiaSemana.JUEVES, DiaSemana.VIERNES
+        };
+        for (DiaSemana dia : diasLaborables) {
             disponibilidadRepository.save(DisponibilidadTaller.builder()
                     .diaSemana(dia)
                     .horaInicio(LocalTime.of(8, 30))
@@ -95,8 +96,10 @@ public class DataLoader implements CommandLineRunner {
                 .taller(t1).build());
 
         // ── Horario semanal — MecánicaExpress (Lun-Sáb 09:00-19:00)
-        DiaSemana[] diasT2 = { DiaSemana.LUNES, DiaSemana.MARTES, DiaSemana.MIERCOLES,
-                               DiaSemana.JUEVES, DiaSemana.VIERNES, DiaSemana.SABADO };
+        DiaSemana[] diasT2 = {
+            DiaSemana.LUNES, DiaSemana.MARTES, DiaSemana.MIERCOLES,
+            DiaSemana.JUEVES, DiaSemana.VIERNES, DiaSemana.SABADO
+        };
         for (DiaSemana dia : diasT2) {
             disponibilidadRepository.save(DisponibilidadTaller.builder()
                     .diaSemana(dia)

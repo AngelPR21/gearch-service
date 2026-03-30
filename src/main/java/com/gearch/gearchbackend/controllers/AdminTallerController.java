@@ -1,9 +1,6 @@
 package com.gearch.gearchbackend.controllers;
 
-
-import com.gearch.gearchbackend.entities.DisponibilidadTaller;
-import com.gearch.gearchbackend.entities.Servicio;
-import com.gearch.gearchbackend.entities.Taller;
+import com.gearch.gearchbackend.entities.*;
 import com.gearch.gearchbackend.services.AdminTallerService;
 import com.gearch.gearchbackend.services.DisponibilidadTallerService;
 import lombok.RequiredArgsConstructor;
@@ -21,9 +18,8 @@ import java.util.Map;
  * Panel de administración del taller.
  * Base URL: /api/admin/{adminId}
  *
- * El servicio verifica en cada llamada que:
- *   1. El adminId tenga rol ADMIN_TALLER
- *   2. El recurso que gestiona pertenezca a su propio taller
+ * Todos los endpoints verifican que el adminId tenga rol ADMIN_TALLER
+ * y que solo gestione su propio taller.
  */
 @RestController
 @RequestMapping("/api/admin/{adminId}")
@@ -33,12 +29,9 @@ public class AdminTallerController {
     private final AdminTallerService adminTallerService;
     private final DisponibilidadTallerService disponibilidadService;
 
-    // ─────────────────────────────────────────────────────────────
-    // Mi taller — datos básicos
-    // ─────────────────────────────────────────────────────────────
+    // ── Mi taller ──────────────────────────────────────────────────
 
     // GET /api/admin/{adminId}/taller
-    // El admin consulta los datos de su taller
     @GetMapping("/taller")
     public ResponseEntity<?> getMiTaller(@PathVariable Long adminId) {
         try {
@@ -49,7 +42,6 @@ public class AdminTallerController {
     }
 
     // PUT /api/admin/{adminId}/taller
-    // El admin actualiza nombre, dirección, teléfono, descripción y coordenadas
     // Body: { "nombre":"...", "direccion":"...", "telefono":"...", "descripcion":"...", "latitud":0.0, "longitud":0.0 }
     @PutMapping("/taller")
     public ResponseEntity<?> actualizarMiTaller(
@@ -62,15 +54,9 @@ public class AdminTallerController {
         }
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // Horario semanal — configuración de disponibilidad
-    // ─────────────────────────────────────────────────────────────
+    // ── Horario semanal ────────────────────────────────────────────
 
     // GET /api/admin/{adminId}/horario
-    // Devuelve todos los días configurados del taller (pantalla "Configurar horario")
-    // Ejemplo de respuesta:
-    // [ { "id":1, "diaSemana":"LUNES",   "horaInicio":"08:30", "horaFin":"18:00", "intervaloMinutos":30 },
-    //   { "id":2, "diaSemana":"SABADO",  "horaInicio":"09:00", "horaFin":"13:00", "intervaloMinutos":30 } ]
     @GetMapping("/horario")
     public ResponseEntity<?> getMiHorario(@PathVariable Long adminId) {
         try {
@@ -81,27 +67,21 @@ public class AdminTallerController {
     }
 
     // POST /api/admin/{adminId}/horario
-    // El admin configura o actualiza el horario de un día de la semana.
-    // Si ese día ya estaba configurado, lo sobreescribe (no crea duplicado).
-    //
+    // Crea o actualiza el horario de un día (si ya existe ese día lo sobreescribe)
     // Body: { "diaSemana": "LUNES", "horaInicio": "08:30", "horaFin": "18:00", "intervaloMinutos": 30 }
-    //
-    // diaSemana: LUNES | MARTES | MIERCOLES | JUEVES | VIERNES | SABADO | DOMINGO
-    // intervaloMinutos: cada cuántos minutos hay un slot disponible (30 recomendado)
     @PostMapping("/horario")
     public ResponseEntity<?> guardarDiaHorario(
             @PathVariable Long adminId,
             @RequestBody DisponibilidadTaller disponibilidad) {
         try {
-            DisponibilidadTaller guardado = adminTallerService.guardarDiaHorario(adminId, disponibilidad);
-            return ResponseEntity.status(HttpStatus.CREATED).body(guardado);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(adminTallerService.guardarDiaHorario(adminId, disponibilidad));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 
     // DELETE /api/admin/{adminId}/horario/{disponibilidadId}
-    // El admin elimina un día del horario (ese día queda como "cerrado")
     @DeleteMapping("/horario/{disponibilidadId}")
     public ResponseEntity<?> eliminarDiaHorario(
             @PathVariable Long adminId,
@@ -114,9 +94,28 @@ public class AdminTallerController {
         }
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // Servicios del taller
-    // ─────────────────────────────────────────────────────────────
+    // GET /api/admin/{adminId}/horas-libres?fecha=2025-06-10
+    // Para que el admin previsualice las horas libres de su taller
+    @GetMapping("/horas-libres")
+    public ResponseEntity<?> getHorasLibres(
+            @PathVariable Long adminId,
+            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha) {
+        try {
+            Taller taller = adminTallerService.getMiTaller(adminId);
+            List<LocalTime> horas = disponibilidadService.getHorasDisponibles(taller.getId(), fecha);
+            if (horas.isEmpty()) {
+                return ResponseEntity.ok(Map.of(
+                        "mensaje", "El taller no tiene disponibilidad para esa fecha",
+                        "horas", List.of()
+                ));
+            }
+            return ResponseEntity.ok(horas);
+        } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    // ── Servicios ──────────────────────────────────────────────────
 
     // GET /api/admin/{adminId}/servicios
     @GetMapping("/servicios")
@@ -168,9 +167,7 @@ public class AdminTallerController {
         }
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // Citas del taller
-    // ─────────────────────────────────────────────────────────────
+    // ── Citas ──────────────────────────────────────────────────────
 
     // GET /api/admin/{adminId}/citas
     @GetMapping("/citas")
@@ -207,9 +204,7 @@ public class AdminTallerController {
         }
     }
 
-    // ─────────────────────────────────────────────────────────────
-    // Reseñas del taller (solo lectura)
-    // ─────────────────────────────────────────────────────────────
+    // ── Reseñas ────────────────────────────────────────────────────
 
     // GET /api/admin/{adminId}/resenas
     @GetMapping("/resenas")
@@ -227,31 +222,6 @@ public class AdminTallerController {
     public ResponseEntity<?> getEstadisticasResenas(@PathVariable Long adminId) {
         try {
             return ResponseEntity.ok(adminTallerService.getEstadisticasResenas(adminId));
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
-    }
-
-    // ─────────────────────────────────────────────────────────────
-    // Horas libres (también accesible desde el panel del admin
-    // para previsualizar cómo ve el calendario un cliente)
-    // ─────────────────────────────────────────────────────────────
-
-    // GET /api/admin/{adminId}/horas-libres?fecha=2025-06-10
-    @GetMapping("/horas-libres")
-    public ResponseEntity<?> getHorasLibres(
-            @PathVariable Long adminId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha) {
-        try {
-            Taller taller = adminTallerService.getMiTaller(adminId);
-            List<LocalTime> horas = disponibilidadService.getHorasDisponibles(taller.getId(), fecha);
-            if (horas.isEmpty()) {
-                return ResponseEntity.ok(Map.of(
-                        "mensaje", "El taller no tiene disponibilidad para esa fecha",
-                        "horas", List.of()
-                ));
-            }
-            return ResponseEntity.ok(horas);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }

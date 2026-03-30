@@ -1,6 +1,7 @@
 package com.gearch.gearchbackend.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.gearch.gearchbackend.enums.RolUsuario;
 import jakarta.persistence.*;
 import lombok.*;
@@ -34,30 +35,27 @@ public class Usuario {
 
     private String telefono;
 
-    // Rol del usuario: CLIENTE o ADMIN_TALLER
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default
     private RolUsuario rol = RolUsuario.CLIENTE;
 
-    // Solo para ADMIN_TALLER: taller que este usuario administra (relación 1 a 1)
+    // Solo para ADMIN_TALLER: taller que administra
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "taller_id", unique = true)
+    @JsonIgnoreProperties({"disponibilidad", "servicios", "citas", "resenas"})
     private Taller tallerAdministrado;
 
-    // Un usuario tiene muchos vehículos
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     @Builder.Default
     private List<Vehiculo> vehiculos = new ArrayList<>();
 
-    // Un usuario hace muchas citas
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     @Builder.Default
     private List<Cita> citas = new ArrayList<>();
 
-    // Un usuario escribe muchas reseñas
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     @Builder.Default

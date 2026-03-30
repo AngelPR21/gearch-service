@@ -1,6 +1,5 @@
 package com.gearch.gearchbackend.services;
 
-
 import com.gearch.gearchbackend.entities.Usuario;
 import com.gearch.gearchbackend.entities.Vehiculo;
 import com.gearch.gearchbackend.repositories.UsuarioRepository;
@@ -9,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -22,8 +20,11 @@ public class VehiculoService {
         return vehiculoRepository.findAll();
     }
 
-    public Optional<Vehiculo> findById(Long id) {
-        return vehiculoRepository.findById(id);
+    public Vehiculo findById(Long id) {
+        if (!vehiculoRepository.existsById(id)) {
+            throw new RuntimeException("Vehículo no encontrado con id: " + id);
+        }
+        return vehiculoRepository.getReferenceById(id);
     }
 
     public List<Vehiculo> findByUsuario(Long usuarioId) {
@@ -32,17 +33,21 @@ public class VehiculoService {
 
     public Vehiculo save(Long usuarioId, Vehiculo vehiculo) {
         if (vehiculoRepository.existsByMatricula(vehiculo.getMatricula())) {
-            throw new RuntimeException("Ya existe un vehículo con matrícula: " + vehiculo.getMatricula());
+            throw new RuntimeException("Ya existe un vehículo con la matrícula: " + vehiculo.getMatricula());
         }
-        Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + usuarioId));
+        if (!usuarioRepository.existsById(usuarioId)) {
+            throw new RuntimeException("Usuario no encontrado con id: " + usuarioId);
+        }
+        Usuario usuario = usuarioRepository.getReferenceById(usuarioId);
         vehiculo.setUsuario(usuario);
         return vehiculoRepository.save(vehiculo);
     }
 
     public Vehiculo update(Long id, Vehiculo datos) {
-        Vehiculo vehiculo = vehiculoRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Vehículo no encontrado con id: " + id));
+        if (!vehiculoRepository.existsById(id)) {
+            throw new RuntimeException("Vehículo no encontrado con id: " + id);
+        }
+        Vehiculo vehiculo = vehiculoRepository.getReferenceById(id);
         vehiculo.setMarca(datos.getMarca());
         vehiculo.setModelo(datos.getModelo());
         vehiculo.setAnio(datos.getAnio());

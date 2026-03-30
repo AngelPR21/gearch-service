@@ -30,30 +30,26 @@ public class Taller {
 
     private String descripcion;
 
-    // Coordenadas para búsqueda por cercanía
     private Double latitud;
     private Double longitud;
 
-    // Un taller tiene su horario semanal configurado por el admin
     @OneToMany(mappedBy = "taller", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     @Builder.Default
     private List<DisponibilidadTaller> disponibilidad = new ArrayList<>();
 
-    // Un taller tiene muchos servicios
     @OneToMany(mappedBy = "taller", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     @Builder.Default
     private List<Servicio> servicios = new ArrayList<>();
 
-    // Un taller tiene muchas citas
     @OneToMany(mappedBy = "taller", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
     @Builder.Default
     private List<Cita> citas = new ArrayList<>();
 
-    // Un taller tiene muchas reseñas
     @OneToMany(mappedBy = "taller", cascade = CascadeType.ALL, orphanRemoval = true)
+    @JsonIgnore
     @Builder.Default
     private List<Resena> resenas = new ArrayList<>();
-
-
 }

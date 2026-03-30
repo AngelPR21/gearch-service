@@ -1,6 +1,5 @@
 package com.gearch.gearchbackend.services;
 
-
 import com.gearch.gearchbackend.entities.Resena;
 import com.gearch.gearchbackend.entities.Taller;
 import com.gearch.gearchbackend.entities.Usuario;
@@ -12,7 +11,6 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,8 +24,11 @@ public class ResenaService {
         return resenaRepository.findAll();
     }
 
-    public Optional<Resena> findById(Long id) {
-        return resenaRepository.findById(id);
+    public Resena findById(Long id) {
+        if (!resenaRepository.existsById(id)) {
+            throw new RuntimeException("Reseña no encontrada con id: " + id);
+        }
+        return resenaRepository.getReferenceById(id);
     }
 
     public List<Resena> findByTaller(Long tallerId) {
@@ -42,17 +43,15 @@ public class ResenaService {
         if (resena.getPuntuacion() < 1 || resena.getPuntuacion() > 5) {
             throw new RuntimeException("La puntuación debe estar entre 1 y 5.");
         }
-
-        Usuario usuario = usuarioRepository.findById(usuarioId)
-                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + usuarioId));
-
-        Taller taller = tallerRepository.findById(tallerId)
-                .orElseThrow(() -> new RuntimeException("Taller no encontrado con id: " + tallerId));
-
-        resena.setUsuario(usuario);
-        resena.setTaller(taller);
+        if (!usuarioRepository.existsById(usuarioId)) {
+            throw new RuntimeException("Usuario no encontrado con id: " + usuarioId);
+        }
+        if (!tallerRepository.existsById(tallerId)) {
+            throw new RuntimeException("Taller no encontrado con id: " + tallerId);
+        }
+        resena.setUsuario(usuarioRepository.getReferenceById(usuarioId));
+        resena.setTaller(tallerRepository.getReferenceById(tallerId));
         resena.setFecha(LocalDateTime.now());
-
         return resenaRepository.save(resena);
     }
 

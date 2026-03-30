@@ -15,7 +15,6 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -25,42 +24,21 @@ public class DisponibilidadTallerService {
     private final TallerRepository tallerRepository;
     private final CitaRepository citaRepository;
 
-    // ── Consultas públicas (cliente) ──────────────────────────────────────────
-
-    /** Devuelve el horario semanal completo de un taller.
-     *  Android lo usa para saber qué días están activos en el calendario. */
     public List<DisponibilidadTaller> getHorarioSemanal(Long tallerId) {
         return disponibilidadRepository.findByTallerId(tallerId);
     }
 
-    /**
-     * Devuelve las horas libres para reservar en una fecha concreta.
-     *
-     * Pasos:
-     * 1. Convierte la fecha a DiaSemana (usando el enum en español)
-     * 2. Busca si el taller tiene horario configurado ese día
-     * 3. Genera todos los slots según el intervalo (ej: 09:00, 09:30, 10:00...)
-     * 4. Quita los slots que ya tienen una cita reservada
-     * 5. Devuelve solo las horas libres
-     *
-     * Ejemplo de respuesta: ["09:00", "09:30", "10:30", "11:00"]
-     */
     public List<LocalTime> getHorasDisponibles(Long tallerId, LocalDate fecha) {
-
-        // 1. Convertir fecha → DiaSemana usando el helper del enum
         DiaSemana diaSemana = DiaSemana.desdeDayOfWeek(fecha.getDayOfWeek());
 
-        // 2. ¿Trabaja el taller ese día?
-        Optional<DisponibilidadTaller> disponibilidad =
+        DisponibilidadTaller horario =
                 disponibilidadRepository.findByTallerIdAndDiaSemana(tallerId, diaSemana);
 
-        if (disponibilidad.isEmpty()) {
-            return List.of(); // El taller no trabaja ese día
+        if (horario == null) {
+            return new ArrayList<>();
         }
 
-        DisponibilidadTaller horario = disponibilidad.get();
-
-        // 3. Generar todos los slots del día según el intervalo configurado
+        // Generar todos los slots del día
         List<LocalTime> todosLosSlots = new ArrayList<>();
         LocalTime slot = horario.getHoraInicio();
         while (slot.isBefore(horario.getHoraFin())) {
@@ -68,46 +46,50 @@ public class DisponibilidadTallerService {
             slot = slot.plusMinutes(horario.getIntervaloMinutos());
         }
 
-        // 4. Obtener las citas ya reservadas ese día concreto
+        // Obtener horas ya ocupadas ese día
+        //Esto da las citas de principio a fin del dia
         LocalDateTime inicioDia = fecha.atStartOfDay();
         LocalDateTime finDia    = fecha.atTime(23, 59, 59);
         List<Cita> citasDelDia  = citaRepository
                 .findByTallerIdAndFechaHoraBetween(tallerId, inicioDia, finDia);
 
-        List<LocalTime> horasOcupadas = citasDelDia.stream()
-                .map(c -> c.getFechaHora().toLocalTime())
-                .toList();
+        //saca la hora de la cita
+        List<LocalTime> horasOcupadas = new ArrayList<>();
+        for (Cita cita : citasDelDia) {
+            horasOcupadas.add(cita.getFechaHora().toLocalTime());
+        }
 
-        // 5. Filtrar: solo los slots que no están ocupados
-        return todosLosSlots.stream()
-                .filter(s -> !horasOcupadas.contains(s))
-                .toList();
+        // Devolver solo los slots libres
+        List<LocalTime> horasLibres = new ArrayList<>();
+        //comprueba la hora de todas las horas con la hora de las citas para sacar solo los libres
+        for (LocalTime s : todosLosSlots) {
+            if (!horasOcupadas.contains(s)) {
+                horasLibres.add(s);
+            }
+        }
+        return horasLibres;
     }
 
-    // ── Gestión (llamada desde AdminTallerService) ────────────────────────────
-
-    /**
-     * Guarda o actualiza el horario de un día concreto del taller.
-     * Si el admin ya tenía configurado ese día, lo sobreescribe.
-     */
     public DisponibilidadTaller guardarDisponibilidad(Long tallerId, DisponibilidadTaller disponibilidad) {
-        Taller taller = tallerRepository.findById(tallerId)
-                .orElseThrow(() -> new RuntimeException("Taller no encontrado con id: " + tallerId));
+        if (!tallerRepository.existsById(tallerId)) {
+            throw new RuntimeException("Taller no encontrado con id: " + tallerId);
+        }
+        Taller taller = tallerRepository.getReferenceById(tallerId);
 
-        // Si ya existe ese día para ese taller, reutilizamos el mismo id para hacer UPDATE
-        disponibilidadRepository
-                .findByTallerIdAndDiaSemana(tallerId, disponibilidad.getDiaSemana())
-                .ifPresent(d -> disponibilidad.setId(d.getId()));
-
+        // Si ya existe ese día, reutilizar el id para hacer UPDATE
+        DisponibilidadTaller existente =
+                disponibilidadRepository.findByTallerIdAndDiaSemana(tallerId, disponibilidad.getDiaSemana());
+        if (existente != null) {
+            disponibilidad.setId(existente.getId());
+        }
         disponibilidad.setTaller(taller);
         return disponibilidadRepository.save(disponibilidad);
     }
 
-    /** El admin elimina la disponibilidad de un día (taller cerrado ese día) */
-    public void eliminarDisponibilidad(Long disponibilidadId) {
-        if (!disponibilidadRepository.existsById(disponibilidadId)) {
-            throw new RuntimeException("Disponibilidad no encontrada con id: " + disponibilidadId);
+    public void eliminarDisponibilidad(Long id) {
+        if (!disponibilidadRepository.existsById(id)) {
+            throw new RuntimeException("Disponibilidad no encontrada con id: " + id);
         }
-        disponibilidadRepository.deleteById(disponibilidadId);
+        disponibilidadRepository.deleteById(id);
     }
 }

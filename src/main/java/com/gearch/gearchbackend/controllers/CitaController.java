@@ -1,6 +1,5 @@
 package com.gearch.gearchbackend.controllers;
 
-
 import com.gearch.gearchbackend.entities.Cita;
 import com.gearch.gearchbackend.services.CitaService;
 import lombok.RequiredArgsConstructor;
@@ -28,21 +27,21 @@ public class CitaController {
 
     // GET /api/citas/{id}
     @GetMapping("/{id}")
-    public ResponseEntity<Cita> getById(@PathVariable Long id) {
-        return citaService.findById(id)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+    public ResponseEntity<?> getById(@PathVariable Long id) {
+        try {
+            return ResponseEntity.ok(citaService.findById(id));
+        } catch (RuntimeException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
+        }
     }
 
     // GET /api/citas/usuario/{usuarioId}
-    // Todas las citas del usuario (historial completo)
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<List<Cita>> getByUsuario(@PathVariable Long usuarioId) {
         return ResponseEntity.ok(citaService.findByUsuario(usuarioId));
     }
 
     // GET /api/citas/usuario/{usuarioId}/proximas
-    // Solo las citas futuras del usuario, ordenadas por fecha (para la pantalla principal del cliente)
     @GetMapping("/usuario/{usuarioId}/proximas")
     public ResponseEntity<List<Cita>> getProximasByUsuario(@PathVariable Long usuarioId) {
         return ResponseEntity.ok(citaService.findProximasByUsuario(usuarioId));
@@ -55,7 +54,6 @@ public class CitaController {
     }
 
     // GET /api/citas/taller/{tallerId}/calendario?inicio=2025-06-01T00:00:00&fin=2025-06-30T23:59:59
-    // Devuelve las horas ya ocupadas del taller en ese rango (para bloquear el calendario en Android)
     @GetMapping("/taller/{tallerId}/calendario")
     public ResponseEntity<List<Cita>> getCalendario(
             @PathVariable Long tallerId,
@@ -64,8 +62,7 @@ public class CitaController {
         return ResponseEntity.ok(citaService.findByTallerEnRango(tallerId, inicio, fin));
     }
 
-    // POST /api/citas?usuarioId=1&tallerId=1&servicioId=1&vehiculoId=1
-    // vehiculoId es OPCIONAL (puede omitirse si el usuario no es propietario del vehículo)
+    // POST /api/citas?usuarioId=1&tallerId=1&servicioId=1&vehiculoId=1 (vehiculoId opcional)
     // Body: { "fechaHora": "2025-07-10T10:00:00", "notas": "..." }
     @PostMapping
     public ResponseEntity<?> create(
@@ -75,15 +72,14 @@ public class CitaController {
             @RequestParam(required = false) Long vehiculoId,
             @RequestBody Cita cita) {
         try {
-            Cita nueva = citaService.save(usuarioId, tallerId, servicioId, vehiculoId, cita);
-            return ResponseEntity.status(HttpStatus.CREATED).body(nueva);
+            return ResponseEntity.status(HttpStatus.CREATED)
+                    .body(citaService.save(usuarioId, tallerId, servicioId, vehiculoId, cita));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
 
-    // PATCH /api/citas/{id}/estado?estado=CANCELADA
-    // El propio usuario puede cancelar su cita
+    // PATCH /api/citas/{id}/estado?estado=CONFIRMADA
     @PatchMapping("/{id}/estado")
     public ResponseEntity<?> updateEstado(@PathVariable Long id, @RequestParam String estado) {
         try {
@@ -100,7 +96,7 @@ public class CitaController {
             citaService.delete(id);
             return ResponseEntity.ok(Map.of("mensaje", "Cita eliminada correctamente"));
         } catch (RuntimeException e) {
-            return ResponseEntity.notFound().build();
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
         }
     }
 }

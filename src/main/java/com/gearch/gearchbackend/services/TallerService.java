@@ -1,13 +1,11 @@
 package com.gearch.gearchbackend.services;
 
-
 import com.gearch.gearchbackend.entities.Taller;
 import com.gearch.gearchbackend.repositories.TallerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -19,8 +17,11 @@ public class TallerService {
         return tallerRepository.findAll();
     }
 
-    public Optional<Taller> findById(Long id) {
-        return tallerRepository.findById(id);
+    public Taller findById(Long id) {
+        if (!tallerRepository.existsById(id)) {
+            throw new RuntimeException("Taller no encontrado con id: " + id);
+        }
+        return tallerRepository.getReferenceById(id);
     }
 
     public List<Taller> buscarPorNombre(String nombre) {
@@ -36,8 +37,10 @@ public class TallerService {
     }
 
     public Taller update(Long id, Taller datos) {
-        Taller taller = tallerRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Taller no encontrado con id: " + id));
+        if (!tallerRepository.existsById(id)) {
+            throw new RuntimeException("Taller no encontrado con id: " + id);
+        }
+        Taller taller = tallerRepository.getReferenceById(id);
         taller.setNombre(datos.getNombre());
         taller.setDireccion(datos.getDireccion());
         taller.setTelefono(datos.getTelefono());
