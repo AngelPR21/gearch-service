@@ -1,6 +1,6 @@
 package com.gearch.gearchbackend.controllers;
 
-import com.gearch.gearchbackend.entities.Resena;
+import com.gearch.gearchbackend.models.Resena;
 import com.gearch.gearchbackend.services.ResenaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

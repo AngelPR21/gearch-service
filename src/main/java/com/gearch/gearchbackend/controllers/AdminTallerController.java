@@ -1,6 +1,6 @@
 package com.gearch.gearchbackend.controllers;
 
-import com.gearch.gearchbackend.entities.*;
+import com.gearch.gearchbackend.models.*;
 import com.gearch.gearchbackend.services.AdminTallerService;
 import com.gearch.gearchbackend.services.DisponibilidadTallerService;
 import lombok.RequiredArgsConstructor;

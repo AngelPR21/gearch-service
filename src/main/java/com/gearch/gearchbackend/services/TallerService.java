@@ -1,6 +1,6 @@
 package com.gearch.gearchbackend.services;
 
-import com.gearch.gearchbackend.entities.Taller;
+import com.gearch.gearchbackend.models.Taller;
 import com.gearch.gearchbackend.repositories.TallerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;

@@ -1,37 +1,32 @@
-package com.gearch.gearchbackend.entities;
+package com.gearch.gearchbackend.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.gearch.gearchbackend.enums.TipoServicio;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.time.LocalDateTime;
-
 @Entity
-@Table(name = "resenas")
+@Table(name = "servicios")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Resena {
+public class Servicio {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String comentario;
+    private String nombre;
 
+    private String descripcion;
+    private Double precio;
+    private Integer duracionMinutos;
+
+    @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Integer puntuacion;
-
-    @Column(nullable = false)
-    @Builder.Default
-    private LocalDateTime fecha = LocalDateTime.now();
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "usuario_id", nullable = false)
-    @JsonIgnore
-    private Usuario usuario;
+    private TipoServicio tipo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "taller_id", nullable = false)

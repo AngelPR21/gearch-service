@@ -1,6 +1,6 @@
 package com.gearch.gearchbackend.repositories;
 
-import com.gearch.gearchbackend.entities.DisponibilidadTaller;
+import com.gearch.gearchbackend.models.DisponibilidadTaller;
 import com.gearch.gearchbackend.enums.DiaSemana;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

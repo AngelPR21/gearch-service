@@ -1,6 +1,6 @@
 package com.gearch.gearchbackend.repositories;
 
-import com.gearch.gearchbackend.entities.Usuario;
+import com.gearch.gearchbackend.models.Usuario;
 import com.gearch.gearchbackend.enums.RolUsuario;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

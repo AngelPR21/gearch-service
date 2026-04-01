@@ -1,6 +1,6 @@
 package com.gearch.gearchbackend.repositories;
 
-import com.gearch.gearchbackend.entities.Cita;
+import com.gearch.gearchbackend.models.Cita;
 import com.gearch.gearchbackend.enums.EstadoCita;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;

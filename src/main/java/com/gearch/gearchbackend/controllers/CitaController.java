@@ -1,6 +1,6 @@
 package com.gearch.gearchbackend.controllers;
 
-import com.gearch.gearchbackend.entities.Cita;
+import com.gearch.gearchbackend.models.Cita;
 import com.gearch.gearchbackend.services.CitaService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;

@@ -1,6 +1,6 @@
 package com.gearch.gearchbackend.controllers;
 
-import com.gearch.gearchbackend.entities.Vehiculo;
+import com.gearch.gearchbackend.models.Vehiculo;
 import com.gearch.gearchbackend.services.VehiculoService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

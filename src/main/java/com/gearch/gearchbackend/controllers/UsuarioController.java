@@ -1,7 +1,7 @@
 package com.gearch.gearchbackend.controllers;
 
-import com.gearch.gearchbackend.entities.Taller;
-import com.gearch.gearchbackend.entities.Usuario;
+import com.gearch.gearchbackend.models.Taller;
+import com.gearch.gearchbackend.models.Usuario;
 import com.gearch.gearchbackend.services.UsuarioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

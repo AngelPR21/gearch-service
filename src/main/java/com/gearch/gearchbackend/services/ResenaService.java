@@ -1,8 +1,6 @@
 package com.gearch.gearchbackend.services;
 
-import com.gearch.gearchbackend.entities.Resena;
-import com.gearch.gearchbackend.entities.Taller;
-import com.gearch.gearchbackend.entities.Usuario;
+import com.gearch.gearchbackend.models.Resena;
 import com.gearch.gearchbackend.repositories.ResenaRepository;
 import com.gearch.gearchbackend.repositories.TallerRepository;
 import com.gearch.gearchbackend.repositories.UsuarioRepository;

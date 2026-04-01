@@ -1,6 +1,6 @@
 package com.gearch.gearchbackend.repositories;
 
-import com.gearch.gearchbackend.entities.Taller;
+import com.gearch.gearchbackend.models.Taller;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;

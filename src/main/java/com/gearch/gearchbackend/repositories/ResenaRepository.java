@@ -1,6 +1,6 @@
 package com.gearch.gearchbackend.repositories;
 
-import com.gearch.gearchbackend.entities.Resena;
+import com.gearch.gearchbackend.models.Resena;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

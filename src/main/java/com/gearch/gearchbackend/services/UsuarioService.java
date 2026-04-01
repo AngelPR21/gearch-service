@@ -1,7 +1,7 @@
 package com.gearch.gearchbackend.services;
 
-import com.gearch.gearchbackend.entities.Taller;
-import com.gearch.gearchbackend.entities.Usuario;
+import com.gearch.gearchbackend.models.Taller;
+import com.gearch.gearchbackend.models.Usuario;
 import com.gearch.gearchbackend.enums.RolUsuario;
 import com.gearch.gearchbackend.repositories.TallerRepository;
 import com.gearch.gearchbackend.repositories.UsuarioRepository;

@@ -1,6 +1,6 @@
 package com.gearch.gearchbackend.controllers;
 
-import com.gearch.gearchbackend.entities.DisponibilidadTaller;
+import com.gearch.gearchbackend.models.DisponibilidadTaller;
 import com.gearch.gearchbackend.services.DisponibilidadTallerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;

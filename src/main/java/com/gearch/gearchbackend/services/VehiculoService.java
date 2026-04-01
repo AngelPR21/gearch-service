@@ -1,7 +1,7 @@
 package com.gearch.gearchbackend.services;
 
-import com.gearch.gearchbackend.entities.Usuario;
-import com.gearch.gearchbackend.entities.Vehiculo;
+import com.gearch.gearchbackend.models.Usuario;
+import com.gearch.gearchbackend.models.Vehiculo;
 import com.gearch.gearchbackend.repositories.UsuarioRepository;
 import com.gearch.gearchbackend.repositories.VehiculoRepository;
 import lombok.RequiredArgsConstructor;

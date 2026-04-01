@@ -1,8 +1,8 @@
 package com.gearch.gearchbackend.services;
 
-import com.gearch.gearchbackend.entities.Cita;
-import com.gearch.gearchbackend.entities.DisponibilidadTaller;
-import com.gearch.gearchbackend.entities.Taller;
+import com.gearch.gearchbackend.models.Cita;
+import com.gearch.gearchbackend.models.DisponibilidadTaller;
+import com.gearch.gearchbackend.models.Taller;
 import com.gearch.gearchbackend.enums.DiaSemana;
 import com.gearch.gearchbackend.repositories.CitaRepository;
 import com.gearch.gearchbackend.repositories.DisponibilidadTallerRepository;
@@ -37,8 +37,7 @@ public class DisponibilidadTallerService {
         if (horario == null) {
             return new ArrayList<>();
         }
-
-        // Generar todos los slots del día
+       // Generar todos los slots del día
         List<LocalTime> todosLosSlots = new ArrayList<>();
         LocalTime slot = horario.getHoraInicio();
         while (slot.isBefore(horario.getHoraFin())) {

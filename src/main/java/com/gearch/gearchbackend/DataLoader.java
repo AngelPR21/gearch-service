@@ -1,6 +1,6 @@
 package com.gearch.gearchbackend;
 
-import com.gearch.gearchbackend.entities.*;
+import com.gearch.gearchbackend.models.*;
 import com.gearch.gearchbackend.enums.DiaSemana;
 import com.gearch.gearchbackend.enums.EstadoCita;
 import com.gearch.gearchbackend.enums.RolUsuario;
@@ -64,7 +64,7 @@ public class DataLoader implements CommandLineRunner {
 
         // ── Usuarios ADMIN_TALLER ─────────────────────────────────
         usuarioRepository.save(Usuario.builder()
-                .nombre("Pedro").apellidos("Sánchez")
+                .nombre("Pedro").apellidos("Garcia")
                 .email("admin.autotop@email.com").password("admin1234")
                 .telefono("963112233").rol(RolUsuario.ADMIN_TALLER)
                 .tallerAdministrado(t1).build());

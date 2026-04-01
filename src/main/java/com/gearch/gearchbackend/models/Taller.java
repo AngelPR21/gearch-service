@@ -1,4 +1,4 @@
-package com.gearch.gearchbackend.entities;
+package com.gearch.gearchbackend.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;

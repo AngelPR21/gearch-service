@@ -1,6 +1,6 @@
 package com.gearch.gearchbackend.controllers;
 
-import com.gearch.gearchbackend.entities.Servicio;
+import com.gearch.gearchbackend.models.Servicio;
 import com.gearch.gearchbackend.services.ServicioService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

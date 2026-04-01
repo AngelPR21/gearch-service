@@ -1,6 +1,6 @@
 package com.gearch.gearchbackend.services;
 
-import com.gearch.gearchbackend.entities.*;
+import com.gearch.gearchbackend.models.*;
 import com.gearch.gearchbackend.enums.DiaSemana;
 import com.gearch.gearchbackend.enums.EstadoCita;
 import com.gearch.gearchbackend.repositories.*;

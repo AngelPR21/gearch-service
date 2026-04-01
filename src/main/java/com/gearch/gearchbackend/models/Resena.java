@@ -1,36 +1,40 @@
-package com.gearch.gearchbackend.entities;
+package com.gearch.gearchbackend.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDateTime;
+
 @Entity
-@Table(name = "vehiculos")
+@Table(name = "resenas")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Vehiculo {
+public class Resena {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column(nullable = false)
-    private String marca;
+    private String comentario;
 
     @Column(nullable = false)
-    private String modelo;
+    private Integer puntuacion;
 
-    @Column(nullable = false, unique = true)
-    private String matricula;
-
-    private Integer anio;
-    private String color;
-    private String combustible;
+    @Column(nullable = false)
+    @Builder.Default
+    private LocalDateTime fecha = LocalDateTime.now();
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id", nullable = false)
     @JsonIgnore
     private Usuario usuario;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "taller_id", nullable = false)
+    @JsonIgnore
+    private Taller taller;
 }
