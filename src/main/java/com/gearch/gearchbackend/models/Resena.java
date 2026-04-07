@@ -30,7 +30,7 @@ public class Resena {
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "usuario_id", nullable = false)
-    @JsonIgnore //EVITA QUE SE DUPLIQUE EN EL JSON
+    @JsonIgnore
     private Usuario usuario;
 
     @ManyToOne(fetch = FetchType.LAZY)
