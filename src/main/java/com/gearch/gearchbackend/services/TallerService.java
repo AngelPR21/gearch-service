@@ -4,7 +4,9 @@ import com.gearch.gearchbackend.models.Taller;
 import com.gearch.gearchbackend.repositories.TallerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Service
@@ -47,6 +49,7 @@ public class TallerService {
         taller.setDescripcion(datos.getDescripcion());
         taller.setLatitud(datos.getLatitud());
         taller.setLongitud(datos.getLongitud());
+        // No sobreescribir fotoPerfil en actualización general
         return tallerRepository.save(taller);
     }
 
@@ -55,5 +58,20 @@ public class TallerService {
             throw new RuntimeException("Taller no encontrado con id: " + id);
         }
         tallerRepository.deleteById(id);
+    }
+
+    public Taller actualizarFotoPerfil(Long id, MultipartFile foto) throws IOException {
+        Taller taller = tallerRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Taller no encontrado con id: " + id));
+
+        if (foto != null) {
+            if (foto.getSize() > 5 * 1024 * 1024)
+                throw new IllegalArgumentException("La imagen no puede superar 5 MB");
+            taller.setFotoPerfil(foto.getBytes());
+        } else {
+            taller.setFotoPerfil(null);
+        }
+
+        return tallerRepository.save(taller);
     }
 }

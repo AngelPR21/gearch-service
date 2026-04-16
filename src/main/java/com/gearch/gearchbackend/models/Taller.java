@@ -1,6 +1,7 @@
 package com.gearch.gearchbackend.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -13,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Taller {
 
     @Id
@@ -32,6 +34,10 @@ public class Taller {
 
     private Double latitud;
     private Double longitud;
+
+    @Lob
+    @Column(name = "foto_perfil")
+    private byte[] fotoPerfil;
 
     @OneToMany(mappedBy = "taller", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore

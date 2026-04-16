@@ -3,11 +3,14 @@ package com.gearch.gearchbackend.controllers;
 import com.gearch.gearchbackend.models.*;
 import com.gearch.gearchbackend.services.AdminTallerService;
 import com.gearch.gearchbackend.services.DisponibilidadTallerService;
+import com.gearch.gearchbackend.services.TallerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -28,6 +31,7 @@ public class AdminTallerController {
 
     private final AdminTallerService adminTallerService;
     private final DisponibilidadTallerService disponibilidadService;
+    private final TallerService tallerService;
 
     // ── Mi taller ──────────────────────────────────────────────────
 
@@ -223,6 +227,40 @@ public class AdminTallerController {
         try {
             return ResponseEntity.ok(adminTallerService.getEstadisticasResenas(adminId));
         } catch (RuntimeException e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    // ── Foto de perfil ─────────────────────────────────────────────
+
+    /**
+     * POST /api/admin/{adminId}/taller/foto
+     * Sube o reemplaza la foto de perfil del taller.
+     * Content-Type: multipart/form-data
+     * Campo: "foto" (JPEG, PNG, WEBP o GIF, máx 5 MB)
+     *
+     * Respuesta 200: { "urlFoto": "http://localhost:8080/uploads/talleres/taller-1-uuid.jpg" }
+     */
+    @PostMapping(value = "/taller/foto", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public ResponseEntity<?> subirFotoPerfil(
+            @PathVariable Long adminId,
+            @RequestParam("foto") MultipartFile foto) {
+        try {
+            Taller taller = adminTallerService.getMiTaller(adminId);
+            tallerService.actualizarFotoPerfil(taller.getId(), foto);
+            return ResponseEntity.ok(Map.of("mensaje", "Foto de perfil actualizada correctamente"));
+        } catch (Exception e) {
+            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/taller/foto")
+    public ResponseEntity<?> eliminarFotoPerfil(@PathVariable Long adminId) {
+        try {
+            Taller taller = adminTallerService.getMiTaller(adminId);
+            tallerService.actualizarFotoPerfil(taller.getId(), null); //Cuando sea null el frontend pondra la por defecto
+            return ResponseEntity.ok(Map.of("mensaje", "Foto de perfil eliminada correctamente"));
+        } catch (Exception e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
     }
