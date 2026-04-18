@@ -33,9 +33,8 @@ public class AdminTallerController {
     private final DisponibilidadTallerService disponibilidadService;
     private final TallerService tallerService;
 
-    // ── Mi taller ──────────────────────────────────────────────────
+    //Mi taller
 
-    // GET /api/admin/{adminId}/taller
     @GetMapping("/taller")
     public ResponseEntity<?> getMiTaller(@PathVariable Long adminId) {
         try {
@@ -45,8 +44,6 @@ public class AdminTallerController {
         }
     }
 
-    // PUT /api/admin/{adminId}/taller
-    // Body: { "nombre":"...", "direccion":"...", "telefono":"...", "descripcion":"...", "latitud":0.0, "longitud":0.0 }
     @PutMapping("/taller")
     public ResponseEntity<?> actualizarMiTaller(
             @PathVariable Long adminId,
@@ -58,9 +55,8 @@ public class AdminTallerController {
         }
     }
 
-    // ── Horario semanal ────────────────────────────────────────────
+    //Horario semanal
 
-    // GET /api/admin/{adminId}/horario
     @GetMapping("/horario")
     public ResponseEntity<?> getMiHorario(@PathVariable Long adminId) {
         try {
@@ -72,7 +68,6 @@ public class AdminTallerController {
 
     // POST /api/admin/{adminId}/horario
     // Crea o actualiza el horario de un día (si ya existe ese día lo sobreescribe)
-    // Body: { "diaSemana": "LUNES", "horaInicio": "08:30", "horaFin": "18:00", "intervaloMinutos": 30 }
     @PostMapping("/horario")
     public ResponseEntity<?> guardarDiaHorario(
             @PathVariable Long adminId,
@@ -119,7 +114,7 @@ public class AdminTallerController {
         }
     }
 
-    // ── Servicios ──────────────────────────────────────────────────
+    //Servicios
 
     // GET /api/admin/{adminId}/servicios
     @GetMapping("/servicios")
@@ -132,7 +127,6 @@ public class AdminTallerController {
     }
 
     // POST /api/admin/{adminId}/servicios
-    // Body: { "nombre":"...", "descripcion":"...", "precio":50.0, "duracionMinutos":30, "tipo":"CAMBIO_ACEITE" }
     @PostMapping("/servicios")
     public ResponseEntity<?> agregarServicio(
             @PathVariable Long adminId,
@@ -171,9 +165,8 @@ public class AdminTallerController {
         }
     }
 
-    // ── Citas ──────────────────────────────────────────────────────
+    //Citas
 
-    // GET /api/admin/{adminId}/citas
     @GetMapping("/citas")
     public ResponseEntity<?> getMisCitas(@PathVariable Long adminId) {
         try {
@@ -208,7 +201,7 @@ public class AdminTallerController {
         }
     }
 
-    // ── Reseñas ────────────────────────────────────────────────────
+    //Reseñas
 
     // GET /api/admin/{adminId}/resenas
     @GetMapping("/resenas")
@@ -220,8 +213,7 @@ public class AdminTallerController {
         }
     }
 
-    // GET /api/admin/{adminId}/resenas/estadisticas
-    // Devuelve: { "tallerId":1, "totalResenas":12, "puntuacionMedia":4.3 }
+
     @GetMapping("/resenas/estadisticas")
     public ResponseEntity<?> getEstadisticasResenas(@PathVariable Long adminId) {
         try {
@@ -231,7 +223,7 @@ public class AdminTallerController {
         }
     }
 
-    // ── Foto de perfil ─────────────────────────────────────────────
+    //Foto de perfil
 
     /**
      * POST /api/admin/{adminId}/taller/foto

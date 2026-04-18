@@ -36,7 +36,6 @@ public class UsuarioController {
     }
 
     // POST /api/usuarios/registro/cliente
-    // Body: { "nombre":"...", "apellidos":"...", "email":"...", "password":"...", "telefono":"..." }
     @PostMapping("/registro/cliente")
     public ResponseEntity<?> registroCliente(@RequestBody Usuario usuario) {
         try {
@@ -47,7 +46,6 @@ public class UsuarioController {
     }
 
     // POST /api/usuarios/registro/taller
-    // Body: { "usuario": {...}, "taller": {...} }
     @PostMapping("/registro/taller")
     public ResponseEntity<?> registroAdminTaller(@RequestBody RegistroTallerRequest request) {
         try {
@@ -59,7 +57,6 @@ public class UsuarioController {
     }
 
     // POST /api/usuarios/login
-    // Body: { "email": "...", "password": "..." }
     // Devuelve el usuario con su rol y, si es admin, el id del taller que gestiona
     @PostMapping("/login")
     public ResponseEntity<?> login(@RequestBody Map<String, String> credenciales) {

@@ -11,6 +11,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @Table(
     name = "citas",
     uniqueConstraints = @UniqueConstraint(columnNames = {"taller_id", "fecha_hora"})
+        //Esto una restriccion en la base de datos que dice que no puede haber dos filas con el mismo taller_id y fecha_hora a la vez.
 )
 @Data
 @NoArgsConstructor

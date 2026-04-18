@@ -54,12 +54,12 @@ public class CitaService {
     public Cita save(Long usuarioId, Long tallerId, Long servicioId,
                      Long vehiculoId, Cita cita) {
 
-        // 1. Comprobar duplicado
+        // primero comprobar duplicado
         if (citaRepository.existsByTallerIdAndFechaHora(tallerId, cita.getFechaHora())) {
             throw new RuntimeException("Ya existe una cita en ese taller para esa fecha y hora.");
         }
 
-        // 2. Validar que la hora esté dentro del horario del taller
+        //validar que la hora este dentro del horario del taller
         LocalDate fecha = cita.getFechaHora().toLocalDate();
         LocalTime hora  = cita.getFechaHora().toLocalTime();
         DiaSemana diaSemana = DiaSemana.desdeDayOfWeek(fecha.getDayOfWeek());
@@ -75,7 +75,7 @@ public class CitaService {
                     + horario.getHoraInicio() + " - " + horario.getHoraFin() + ").");
         }
 
-        // 3. Cargar entidades relacionadas con comprobación if
+        //buscar si existe el usuario, taller y servicio, si existe lo guarda en la cita si no tira excepcion
         if (!usuarioRepository.existsById(usuarioId)) {
             throw new RuntimeException("Usuario no encontrado con id: " + usuarioId);
         }
@@ -91,7 +91,7 @@ public class CitaService {
         cita.setServicio(servicioRepository.getReferenceById(servicioId));
         cita.setEstado(EstadoCita.PENDIENTE);
 
-        // 4. Vehículo es opcional
+        //Vehiculo opcional
         if (vehiculoId != null) {
             if (!vehiculoRepository.existsById(vehiculoId)) {
                 throw new RuntimeException("Vehículo no encontrado con id: " + vehiculoId);

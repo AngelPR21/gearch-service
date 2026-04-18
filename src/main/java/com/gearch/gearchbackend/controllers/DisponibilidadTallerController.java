@@ -48,7 +48,6 @@ public class DisponibilidadTallerController {
     }
 
     // POST /api/disponibilidad/taller/{tallerId}
-    // Body: { "diaSemana": "LUNES", "horaInicio": "08:30", "horaFin": "18:00", "intervaloMinutos": 30 }
     @PostMapping("/taller/{tallerId}")
     public ResponseEntity<?> guardarDisponibilidad(
             @PathVariable Long tallerId,

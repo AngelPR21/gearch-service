@@ -35,7 +35,7 @@ public class AdminTallerService {
         return admin;
     }
 
-    // ── Mi taller ─────────────────────────────────────────────────
+    // Mi taller
     public Taller getMiTaller(Long adminId) {
         return verificarAdmin(adminId).getTallerAdministrado();
     }
@@ -52,7 +52,7 @@ public class AdminTallerService {
         return tallerRepository.save(taller);
     }
 
-    // ── Horario ───────────────────────────────────────────────────
+    // Horario
     public List<DisponibilidadTaller> getMiHorario(Long adminId) {
         Taller taller = verificarAdmin(adminId).getTallerAdministrado();
         return disponibilidadRepository.findByTallerId(taller.getId());
@@ -81,7 +81,7 @@ public class AdminTallerService {
         disponibilidadRepository.deleteById(disponibilidadId);
     }
 
-    // ── Servicios ─────────────────────────────────────────────────
+    //Servicios
     public List<Servicio> getMisServicios(Long adminId) {
         Taller taller = verificarAdmin(adminId).getTallerAdministrado();
         return servicioRepository.findByTallerId(taller.getId());
@@ -122,7 +122,7 @@ public class AdminTallerService {
         servicioRepository.deleteById(servicioId);
     }
 
-    // ── Citas ─────────────────────────────────────────────────────
+    //Citas
     public List<Cita> getMisCitas(Long adminId) {
         Taller taller = verificarAdmin(adminId).getTallerAdministrado();
         return citaRepository.findByTallerId(taller.getId());
@@ -147,7 +147,7 @@ public class AdminTallerService {
         return citaRepository.save(cita);
     }
 
-    // ── Reseñas ───────────────────────────────────────────────────
+    //Reseñas
     public List<Resena> getMisResenas(Long adminId) {
         Taller taller = verificarAdmin(adminId).getTallerAdministrado();
         return resenaRepository.findByTallerId(taller.getId());

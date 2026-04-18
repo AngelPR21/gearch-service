@@ -13,6 +13,8 @@ public interface TallerRepository extends JpaRepository<Taller, Long> {
 
     List<Taller> findByNombreContainingIgnoreCase(String nombre);
 
+
+    //query esta arriba del metodo porque es asi es como el @Override
     @Query(value = """
         SELECT * FROM talleres t
         WHERE t.latitud IS NOT NULL AND t.longitud IS NOT NULL

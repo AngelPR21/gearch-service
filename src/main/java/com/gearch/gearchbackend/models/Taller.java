@@ -41,7 +41,7 @@ public class Taller {
 
     @OneToMany(mappedBy = "taller", cascade = CascadeType.ALL, orphanRemoval = true)
     @JsonIgnore
-    @Builder.Default
+    @Builder.Default //si no lo inicializo como array se quedara en null por culpa de lmbmok
     private List<DisponibilidadTaller> disponibilidad = new ArrayList<>();
 
     @OneToMany(mappedBy = "taller", cascade = CascadeType.ALL, orphanRemoval = true)

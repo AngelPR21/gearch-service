@@ -46,7 +46,6 @@ public class ResenaController {
     }
 
     // POST /api/resenas?usuarioId=1&tallerId=1
-    // Body: { "comentario": "...", "puntuacion": 5 }
     @PostMapping
     public ResponseEntity<?> create(
             @RequestParam Long usuarioId,

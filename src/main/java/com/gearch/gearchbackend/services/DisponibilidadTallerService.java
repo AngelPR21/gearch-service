@@ -45,7 +45,7 @@ public class DisponibilidadTallerService {
             slot = slot.plusMinutes(horario.getIntervaloMinutos());
         }
 
-        // Obtener horas ya ocupadas ese día
+        // Obtener horas ya ocupadas ese dia
         //Esto da las citas de principio a fin del dia
         LocalDateTime inicioDia = fecha.atStartOfDay();
         LocalDateTime finDia    = fecha.atTime(23, 59, 59);
@@ -75,7 +75,7 @@ public class DisponibilidadTallerService {
         }
         Taller taller = tallerRepository.getReferenceById(tallerId);
 
-        // Si ya existe ese día, reutilizar el id para hacer UPDATE
+        // Si ya existe ese dia, reutilizar el id para hacer UPDATE
         DisponibilidadTaller existente =
                 disponibilidadRepository.findByTallerIdAndDiaSemana(tallerId, disponibilidad.getDiaSemana());
         if (existente != null) {

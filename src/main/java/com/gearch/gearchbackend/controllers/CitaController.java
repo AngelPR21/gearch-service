@@ -63,7 +63,6 @@ public class CitaController {
     }
 
     // POST /api/citas?usuarioId=1&tallerId=1&servicioId=1&vehiculoId=1 (vehiculoId opcional)
-    // Body: { "fechaHora": "2025-07-10T10:00:00", "notas": "..." }
     @PostMapping
     public ResponseEntity<?> create(
             @RequestParam Long usuarioId,
