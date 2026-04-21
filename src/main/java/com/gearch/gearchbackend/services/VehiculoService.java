@@ -11,7 +11,7 @@ import java.util.List;
 
 @Service
 @RequiredArgsConstructor
-public class VehiculoService {
+public class  VehiculoService {
 
     private final VehiculoRepository vehiculoRepository;
     private final UsuarioRepository usuarioRepository;
