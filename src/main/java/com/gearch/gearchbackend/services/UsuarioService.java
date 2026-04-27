@@ -66,6 +66,7 @@ public class UsuarioService {
     }
 
     public Usuario login(String email, String password) {
+        //aqui se verifica la contraseña, repository devuelve obj java del sql y luego el controller los convierte en json
         Usuario usuario = usuarioRepository.findByEmail(email);
         if (usuario == null) {
             throw new RuntimeException("Email o contraseña incorrectos");
