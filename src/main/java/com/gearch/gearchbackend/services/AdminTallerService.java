@@ -13,7 +13,7 @@ import java.util.Map;
 @Service
 @RequiredArgsConstructor
 public class AdminTallerService {
-
+//T-ODO VERIFICA SI ES ADMIN PRIMERO ANTES DE HACER NADA
     private final UsuarioRepository              usuarioRepository;
     private final TallerRepository               tallerRepository;
     private final ServicioRepository             servicioRepository;
@@ -64,6 +64,10 @@ public class AdminTallerService {
                 .findByTallerIdAndDiaSemana(taller.getId(), disponibilidad.getDiaSemana());
         if (existente != null) {
             disponibilidad.setId(existente.getId());
+            /*
+            Le pone el mismo id que ya tenía en la base de datos.
+            Así cuando hace el save al final, JPA en vez de hacer un INSERT hace un UPDATE sobre la fila existente.
+             */
         }
         disponibilidad.setTaller(taller);
         return disponibilidadRepository.save(disponibilidad);

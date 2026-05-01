@@ -25,12 +25,12 @@ import java.util.Map;
  * y que solo gestione su propio taller.
  */
 @RestController
+//TO-DO NECESITA EL ADMINID
 @RequestMapping("/api/admin/{adminId}")
 @RequiredArgsConstructor
 public class AdminTallerController {
 
     private final AdminTallerService adminTallerService;
-    private final DisponibilidadTallerService disponibilidadService;
     private final TallerService tallerService;
 
     //Mi taller
@@ -93,26 +93,6 @@ public class AdminTallerController {
         }
     }
 
-    // GET /api/admin/{adminId}/horas-libres?fecha=2025-06-10
-    // Para que el admin previsualice las horas libres de su taller
-    @GetMapping("/horas-libres")
-    public ResponseEntity<?> getHorasLibres(
-            @PathVariable Long adminId,
-            @RequestParam @DateTimeFormat(iso = DateTimeFormat.ISO.DATE) LocalDate fecha) {
-        try {
-            Taller taller = adminTallerService.getMiTaller(adminId);
-            List<LocalTime> horas = disponibilidadService.getHorasDisponibles(taller.getId(), fecha);
-            if (horas.isEmpty()) {
-                return ResponseEntity.ok(Map.of(
-                        "mensaje", "El taller no tiene disponibilidad para esa fecha",
-                        "horas", List.of()
-                ));
-            }
-            return ResponseEntity.ok(horas);
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
-    }
 
     //Servicios
 
