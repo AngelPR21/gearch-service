@@ -16,7 +16,7 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
-
+//http://localhost:8080/swagger-ui.html
 /**
  * Panel de administración del taller.
  * Base URL: /api/admin/{adminId}
