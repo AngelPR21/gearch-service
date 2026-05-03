@@ -70,6 +70,7 @@ public class AdminTallerService {
         return disponibilidadRepository.save(disponibilidad);
     }
 
+    //disponiblidadId es la id que sale a cada dia al hacer get del horario de un taller
     public void eliminarDiaHorario(Long adminId, Long disponibilidadId) {
         Taller taller = verificarAdmin(adminId).getTallerAdministrado();
         DisponibilidadTaller d = disponibilidadRepository.findById(disponibilidadId)
