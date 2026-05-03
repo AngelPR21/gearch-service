@@ -38,35 +38,4 @@ public class ServicioController {
     public ResponseEntity<List<Servicio>> getByTaller(@PathVariable Long tallerId) {
         return ResponseEntity.ok(servicioService.findByTaller(tallerId));
     }
-
-    // POST /api/servicios/taller/{tallerId}
-    @PostMapping("/taller/{tallerId}")
-    public ResponseEntity<?> create(@PathVariable Long tallerId, @RequestBody Servicio servicio) {
-        try {
-            return ResponseEntity.status(HttpStatus.CREATED).body(servicioService.save(tallerId, servicio));
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
-    }
-
-    // PUT /api/servicios/{id}
-    @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Servicio servicio) {
-        try {
-            return ResponseEntity.ok(servicioService.update(id, servicio));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
-        }
-    }
-
-    // DELETE /api/servicios/{id}
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        try {
-            servicioService.delete(id);
-            return ResponseEntity.ok(Map.of("mensaje", "Servicio eliminado correctamente"));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
-        }
-    }
 }

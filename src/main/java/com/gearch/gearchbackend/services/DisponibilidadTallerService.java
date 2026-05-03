@@ -2,11 +2,9 @@ package com.gearch.gearchbackend.services;
 
 import com.gearch.gearchbackend.models.Cita;
 import com.gearch.gearchbackend.models.DisponibilidadTaller;
-import com.gearch.gearchbackend.models.Taller;
 import com.gearch.gearchbackend.enums.DiaSemana;
 import com.gearch.gearchbackend.repositories.CitaRepository;
 import com.gearch.gearchbackend.repositories.DisponibilidadTallerRepository;
-import com.gearch.gearchbackend.repositories.TallerRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,7 +19,6 @@ import java.util.List;
 public class DisponibilidadTallerService {
 
     private final DisponibilidadTallerRepository disponibilidadRepository;
-    private final TallerRepository tallerRepository;
     private final CitaRepository citaRepository;
 
     public List<DisponibilidadTaller> getHorarioSemanal(Long tallerId) {
@@ -67,28 +64,5 @@ public class DisponibilidadTallerService {
             }
         }
         return horasLibres;
-    }
-
-    public DisponibilidadTaller guardarDisponibilidad(Long tallerId, DisponibilidadTaller disponibilidad) {
-        if (!tallerRepository.existsById(tallerId)) {
-            throw new RuntimeException("Taller no encontrado con id: " + tallerId);
-        }
-        Taller taller = tallerRepository.getReferenceById(tallerId);
-
-        // Si ya existe ese dia, reutilizar el id para hacer UPDATE
-        DisponibilidadTaller existente =
-                disponibilidadRepository.findByTallerIdAndDiaSemana(tallerId, disponibilidad.getDiaSemana());
-        if (existente != null) {
-            disponibilidad.setId(existente.getId());
-        }
-        disponibilidad.setTaller(taller);
-        return disponibilidadRepository.save(disponibilidad);
-    }
-
-    public void eliminarDisponibilidad(Long id) {
-        if (!disponibilidadRepository.existsById(id)) {
-            throw new RuntimeException("Disponibilidad no encontrada con id: " + id);
-        }
-        disponibilidadRepository.deleteById(id);
     }
 }

@@ -22,10 +22,8 @@ public class AdminTallerService {
     private final DisponibilidadTallerRepository disponibilidadRepository;
 
     private Usuario verificarAdmin(Long adminId) {
-        if (!usuarioRepository.existsById(adminId)) {
-            throw new RuntimeException("Usuario no encontrado con id: " + adminId);
-        }
-        Usuario admin = usuarioRepository.findById(adminId).get();
+        Usuario admin = usuarioRepository.findById(adminId)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + adminId));
         if (admin.getRol() != RolUsuario.ADMIN_TALLER) {
             throw new RuntimeException("El usuario no tiene rol ADMIN_TALLER.");
         }
@@ -41,8 +39,7 @@ public class AdminTallerService {
     }
 
     public Taller actualizarMiTaller(Long adminId, Taller datos) {
-        Usuario admin  = verificarAdmin(adminId);
-        Taller  taller = admin.getTallerAdministrado();
+        Taller taller = verificarAdmin(adminId).getTallerAdministrado();
         taller.setNombre(datos.getNombre());
         taller.setDireccion(datos.getDireccion());
         taller.setTelefono(datos.getTelefono());
@@ -75,10 +72,8 @@ public class AdminTallerService {
 
     public void eliminarDiaHorario(Long adminId, Long disponibilidadId) {
         Taller taller = verificarAdmin(adminId).getTallerAdministrado();
-        if (!disponibilidadRepository.existsById(disponibilidadId)) {
-            throw new RuntimeException("Horario no encontrado con id: " + disponibilidadId);
-        }
-        DisponibilidadTaller d = disponibilidadRepository.findById(disponibilidadId).get();
+        DisponibilidadTaller d = disponibilidadRepository.findById(disponibilidadId)
+                .orElseThrow(() -> new RuntimeException("Horario no encontrado con id: " + disponibilidadId));
         if (!d.getTaller().getId().equals(taller.getId())) {
             throw new RuntimeException("Ese horario no pertenece a tu taller.");
         }
@@ -98,12 +93,10 @@ public class AdminTallerService {
     }
 
     public Servicio actualizarServicio(Long adminId, Long servicioId, Servicio datos) {
-        Usuario admin = verificarAdmin(adminId);
-        if (!servicioRepository.existsById(servicioId)) {
-            throw new RuntimeException("Servicio no encontrado con id: " + servicioId);
-        }
-        Servicio servicio = servicioRepository.findById(servicioId).get();
-        if (!servicio.getTaller().getId().equals(admin.getTallerAdministrado().getId())) {
+        Taller taller = verificarAdmin(adminId).getTallerAdministrado();
+        Servicio servicio = servicioRepository.findById(servicioId)
+                .orElseThrow(() -> new RuntimeException("Servicio no encontrado con id: " + servicioId));
+        if (!servicio.getTaller().getId().equals(taller.getId())) {
             throw new RuntimeException("Ese servicio no pertenece a tu taller.");
         }
         servicio.setNombre(datos.getNombre());
@@ -115,12 +108,10 @@ public class AdminTallerService {
     }
 
     public void eliminarServicio(Long adminId, Long servicioId) {
-        Usuario admin = verificarAdmin(adminId);
-        if (!servicioRepository.existsById(servicioId)) {
-            throw new RuntimeException("Servicio no encontrado con id: " + servicioId);
-        }
-        Servicio servicio = servicioRepository.findById(servicioId).get();
-        if (!servicio.getTaller().getId().equals(admin.getTallerAdministrado().getId())) {
+        Taller taller = verificarAdmin(adminId).getTallerAdministrado();
+        Servicio servicio = servicioRepository.findById(servicioId)
+                .orElseThrow(() -> new RuntimeException("Servicio no encontrado con id: " + servicioId));
+        if (!servicio.getTaller().getId().equals(taller.getId())) {
             throw new RuntimeException("Ese servicio no pertenece a tu taller.");
         }
         servicioRepository.deleteById(servicioId);
@@ -140,10 +131,8 @@ public class AdminTallerService {
 
     public Cita cambiarEstadoCita(Long adminId, Long citaId, String nuevoEstado) {
         Taller taller = verificarAdmin(adminId).getTallerAdministrado();
-        if (!citaRepository.existsById(citaId)) {
-            throw new RuntimeException("Cita no encontrada con id: " + citaId);
-        }
-        Cita cita = citaRepository.findById(citaId).get();
+        Cita cita = citaRepository.findById(citaId)
+                .orElseThrow(() -> new RuntimeException("Cita no encontrada con id: " + citaId));
         if (!cita.getTaller().getId().equals(taller.getId())) {
             throw new RuntimeException("Esa cita no pertenece a tu taller.");
         }

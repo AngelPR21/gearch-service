@@ -4,7 +4,6 @@ import com.gearch.gearchbackend.models.DisponibilidadTaller;
 import com.gearch.gearchbackend.services.DisponibilidadTallerService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -44,30 +43,6 @@ public class DisponibilidadTallerController {
             return ResponseEntity.ok(horas);
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
-    }
-
-    // POST /api/disponibilidad/taller/{tallerId}
-    @PostMapping("/taller/{tallerId}")
-    public ResponseEntity<?> guardarDisponibilidad(
-            @PathVariable Long tallerId,
-            @RequestBody DisponibilidadTaller disponibilidad) {
-        try {
-            return ResponseEntity.status(HttpStatus.CREATED)
-                    .body(disponibilidadService.guardarDisponibilidad(tallerId, disponibilidad));
-        } catch (RuntimeException e) {
-            return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
-        }
-    }
-
-    // DELETE /api/disponibilidad/{id}
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> eliminarDisponibilidad(@PathVariable Long id) {
-        try {
-            disponibilidadService.eliminarDisponibilidad(id);
-            return ResponseEntity.ok(Map.of("mensaje", "Disponibilidad eliminada correctamente"));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
         }
     }
 }
