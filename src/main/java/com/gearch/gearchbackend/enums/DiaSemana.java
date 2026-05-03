@@ -11,7 +11,8 @@ public enum DiaSemana {
     SABADO,
     DOMINGO;
 
-    public static DiaSemana desdeDayOfWeek(DayOfWeek dow) {
-        return DiaSemana.values()[dow.ordinal()];
+    //pasa de monday a lunes buscando en el enum de DiaSemana, convierte Monday = 0 el .ordinal
+    public static DiaSemana desdeDayOfWeek(DayOfWeek diaSemana) {
+        return DiaSemana.values()[diaSemana.ordinal()];
     }
 }
