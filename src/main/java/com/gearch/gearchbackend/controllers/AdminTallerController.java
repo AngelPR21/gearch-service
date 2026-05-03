@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Map;
 //http://localhost:8080/swagger-ui.html
 /**
- * Panel de administración del taller.
+ * Panel de administración del tallere.
  * Base URL: /api/admin/{adminId}
  *
  * Todos los endpoints verifican que el adminId tenga rol ADMIN_TALLER
