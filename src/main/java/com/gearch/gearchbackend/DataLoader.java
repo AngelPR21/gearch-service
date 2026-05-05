@@ -174,6 +174,6 @@ public class DataLoader implements CommandLineRunner {
                 .puntuacion(4).fecha(LocalDateTime.now())
                 .usuario(u2).taller(t2).build());
 
-        System.out.println("✅ Datos de ejemplo cargados correctamente.");
+        System.out.println("Datos de ejemplo cargados correctamente.");
     }
 }
