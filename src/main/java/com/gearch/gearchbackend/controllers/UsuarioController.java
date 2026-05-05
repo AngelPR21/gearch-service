@@ -50,6 +50,7 @@ public class UsuarioController {
     public ResponseEntity<?> registroAdminTaller(@RequestBody RegistroTallerRequest request) {
         try {
             return ResponseEntity.status(HttpStatus.CREATED)
+                    //.usuario() y .taller() son los getters del record
                     .body(usuarioService.registrarAdminTaller(request.usuario(), request.taller()));
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
@@ -101,6 +102,6 @@ public class UsuarioController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
         }
     }
-
+    //Esto es como una clase contenedor temporal que contiene al objeto Usuario y Taller y tiene getters
     record RegistroTallerRequest(Usuario usuario, Taller taller) {}
 }

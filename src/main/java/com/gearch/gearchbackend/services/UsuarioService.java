@@ -41,9 +41,9 @@ public class UsuarioService {
         if (usuarioRepository.existsByEmail(usuario.getEmail())) {
             throw new RuntimeException("Ya existe un usuario con el email: " + usuario.getEmail());
         }
-        Taller tallerGuardado = tallerRepository.save(taller);
+        Taller tallerGuardado = tallerRepository.save(taller);//devuelve taller con id ya asignada
         usuario.setRol(RolUsuario.ADMIN_TALLER);
-        usuario.setTallerAdministrado(tallerGuardado);
+        usuario.setTallerAdministrado(tallerGuardado);//le asignamos el taller que ya tiene la id
         return usuarioRepository.save(usuario);
     }
 

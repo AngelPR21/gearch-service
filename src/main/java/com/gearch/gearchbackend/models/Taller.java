@@ -16,7 +16,7 @@ import java.util.List;
 @Builder
 @JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
 public class Taller {
-
+//la id se genera solo cuando se inserta en  la bbdd
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
