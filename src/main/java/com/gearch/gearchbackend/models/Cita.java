@@ -17,7 +17,7 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) //esto evita que json lea unas cosas que da el lazy y asi pued eserializarlo y no peta
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"}) //esto evita que json lea unas cosas que da el lazy y asi puede serializarlo y no peta
 public class Cita {
 
     @Id
