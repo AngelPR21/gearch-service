@@ -38,8 +38,7 @@ public class Usuario {
 
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    @Builder.Default
-    private RolUsuario rol = RolUsuario.CLIENTE;
+    private RolUsuario rol;
 
     // Solo para ADMIN_TALLER: taller que administra
     @OneToOne(fetch = FetchType.LAZY)

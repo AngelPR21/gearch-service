@@ -33,7 +33,6 @@ public class UsuarioService {
             throw new RuntimeException("Ya existe un usuario con el email: " + usuario.getEmail());
         }
         usuario.setRol(RolUsuario.CLIENTE);
-        usuario.setTallerAdministrado(null);
         return usuarioRepository.save(usuario);
     }
 
