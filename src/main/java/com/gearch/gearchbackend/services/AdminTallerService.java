@@ -12,6 +12,7 @@ import java.util.Map;
 
 @Service
 @RequiredArgsConstructor
+//ADMIN TALLER ES PARA GESTIONAR LAS COSAS DEL TALLER
 public class AdminTallerService {
 //T-ODO VERIFICA SI ES ADMIN PRIMERO ANTES DE HACER NADA
     private final UsuarioRepository              usuarioRepository;
@@ -37,7 +38,7 @@ public class AdminTallerService {
     public Taller getMiTaller(Long adminId) {
         return verificarAdmin(adminId).getTallerAdministrado();
     }
-
+    //Actualizar DATOS DEL TALLER
     public Taller actualizarMiTaller(Long adminId, Taller datos) {
         Taller taller = verificarAdmin(adminId).getTallerAdministrado();
         taller.setNombre(datos.getNombre());
@@ -148,7 +149,7 @@ public class AdminTallerService {
     }
 
     public Map<String, Object> getEstadisticasResenas(Long adminId) {
-        Taller       taller  = verificarAdmin(adminId).getTallerAdministrado();
+        Taller taller  = verificarAdmin(adminId).getTallerAdministrado();
         List<Resena> resenas = resenaRepository.findByTallerId(taller.getId());
         double suma = 0;
         for (Resena r : resenas) {

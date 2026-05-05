@@ -16,6 +16,8 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.List;
 import java.util.Map;
+
+//CONTROLADOR PARA GESTIONAR TALLER
 //http://localhost:8080/swagger-ui.html
 /**
  * Panel de administración del tallere.
