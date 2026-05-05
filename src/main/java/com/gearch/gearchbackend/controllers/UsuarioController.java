@@ -51,7 +51,7 @@ public class UsuarioController {
         try {
             return ResponseEntity.status(HttpStatus.CREATED)
                     //.usuario() y .taller() son los getters del record
-                    .body(usuarioService.registrarAdminTaller(request.usuario(), request.taller()));
+                    .body(usuarioService.registrarAdminTaller(request.usuario(), request.taller()));//devuelve el usuario
         } catch (RuntimeException e) {
             return ResponseEntity.badRequest().body(Map.of("error", e.getMessage()));
         }
