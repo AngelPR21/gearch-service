@@ -17,22 +17,6 @@ public class ResenaController {
 
     private final ResenaService resenaService;
 
-    // GET /api/resenas
-    @GetMapping
-    public ResponseEntity<List<Resena>> getAll() {
-        return ResponseEntity.ok(resenaService.findAll());
-    }
-
-    // GET /api/resenas/{id}
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable Long id) {
-        try {
-            return ResponseEntity.ok(resenaService.findById(id));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
-        }
-    }
-
     // GET /api/resenas/taller/{tallerId}
     @GetMapping("/taller/{tallerId}")
     public ResponseEntity<List<Resena>> getByTaller(@PathVariable Long tallerId) {

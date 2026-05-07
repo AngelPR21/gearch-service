@@ -47,31 +47,4 @@ public class TallerController {
             @RequestParam(defaultValue = "10") double radio) {
         return ResponseEntity.ok(tallerService.buscarCercanos(lat, lng, radio));
     }
-
-    // POST /api/talleres
-    @PostMapping
-    public ResponseEntity<Taller> create(@RequestBody Taller taller) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(tallerService.save(taller));
-    }
-
-    // PUT /api/talleres/{id}
-    @PutMapping("/{id}")
-    public ResponseEntity<?> update(@PathVariable Long id, @RequestBody Taller taller) {
-        try {
-            return ResponseEntity.ok(tallerService.update(id, taller));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
-        }
-    }
-
-    // DELETE /api/talleres/{id}
-    @DeleteMapping("/{id}")
-    public ResponseEntity<?> delete(@PathVariable Long id) {
-        try {
-            tallerService.delete(id);
-            return ResponseEntity.ok(Map.of("mensaje", "Taller eliminado correctamente"));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
-        }
-    }
 }

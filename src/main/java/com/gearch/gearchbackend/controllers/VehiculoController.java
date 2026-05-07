@@ -17,22 +17,6 @@ public class VehiculoController {
 
     private final VehiculoService vehiculoService;
 
-    // GET /api/vehiculos
-    @GetMapping
-    public ResponseEntity<List<Vehiculo>> getAll() {
-        return ResponseEntity.ok(vehiculoService.findAll());
-    }
-
-    // GET /api/vehiculos/{id}
-    @GetMapping("/{id}")
-    public ResponseEntity<?> getById(@PathVariable Long id) {
-        try {
-            return ResponseEntity.ok(vehiculoService.findById(id));
-        } catch (RuntimeException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Map.of("error", e.getMessage()));
-        }
-    }
-
     // GET /api/vehiculos/usuario/{usuarioId}
     @GetMapping("/usuario/{usuarioId}")
     public ResponseEntity<List<Vehiculo>> getByUsuario(@PathVariable Long usuarioId) {
