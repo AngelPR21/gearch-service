@@ -58,9 +58,14 @@ public class UsuarioService {
     }
 
     public void delete(Long id) {
-        if (!usuarioRepository.existsById(id)) {
-            throw new RuntimeException("Usuario no encontrado con id: " + id);
+        Usuario usuario = usuarioRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + id));
+
+        // Si es admin de taller, borramos también el taller
+        if (usuario.getTallerAdministrado() != null) {
+            tallerRepository.deleteById(usuario.getTallerAdministrado().getId());
         }
+
         usuarioRepository.deleteById(id);
     }
 

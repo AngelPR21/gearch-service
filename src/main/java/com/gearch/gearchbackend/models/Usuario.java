@@ -41,7 +41,7 @@ public class Usuario {
     private RolUsuario rol;
 
     // Solo para ADMIN_TALLER: taller que administra
-    @OneToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "taller_id", unique = true)
     @JsonIgnoreProperties({"disponibilidad", "servicios", "citas", "resenas"})
     private Taller tallerAdministrado;
