@@ -49,7 +49,6 @@ public class ResenaService {
         }
         resena.setUsuario(usuarioRepository.getReferenceById(usuarioId));
         resena.setTaller(tallerRepository.getReferenceById(tallerId));
-        resena.setFecha(LocalDateTime.now());
         return resenaRepository.save(resena);
     }
 

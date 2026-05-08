@@ -158,7 +158,7 @@ public class AdminTallerController {
         }
     }
 
-    // GET /api/admin/{adminId}/citas/estado?estado=PENDIENTE
+    // GET /api/admin/{adminId}/citas/estado?estado=CONFIRMADA
     @GetMapping("/citas/estado")
     public ResponseEntity<?> getMisCitasPorEstado(
             @PathVariable Long adminId,

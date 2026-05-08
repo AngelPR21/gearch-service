@@ -89,7 +89,6 @@ public class CitaService {
         cita.setUsuario(usuarioRepository.getReferenceById(usuarioId));
         cita.setTaller(tallerRepository.getReferenceById(tallerId));
         cita.setServicio(servicioRepository.getReferenceById(servicioId));
-        cita.setEstado(EstadoCita.PENDIENTE);
 
         //Vehiculo opcional
         if (vehiculoId != null) {

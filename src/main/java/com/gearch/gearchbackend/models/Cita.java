@@ -30,7 +30,7 @@ public class Cita {
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
     @Builder.Default
-    private EstadoCita estado = EstadoCita.PENDIENTE;
+    private EstadoCita estado = EstadoCita.CONFIRMADA;
 
     private String notas;
 
