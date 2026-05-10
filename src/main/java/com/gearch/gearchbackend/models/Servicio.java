@@ -2,7 +2,6 @@ package com.gearch.gearchbackend.models;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.gearch.gearchbackend.enums.TipoServicio;
 import jakarta.persistence.*;
 import lombok.*;
 
@@ -24,11 +23,6 @@ public class Servicio {
 
     private String descripcion;
     private Double precio;
-    private Integer duracionMinutos;
-
-    @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
-    private TipoServicio tipo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "taller_id", nullable = false)

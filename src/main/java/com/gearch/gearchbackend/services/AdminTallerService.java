@@ -104,8 +104,7 @@ public class AdminTallerService {
         servicio.setNombre(datos.getNombre());
         servicio.setDescripcion(datos.getDescripcion());
         servicio.setPrecio(datos.getPrecio());
-        servicio.setDuracionMinutos(datos.getDuracionMinutos());
-        servicio.setTipo(datos.getTipo());
+
         return servicioRepository.save(servicio);
     }
 
